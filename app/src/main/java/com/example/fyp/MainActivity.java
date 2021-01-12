@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -28,34 +29,49 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView textView;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         //find imageview
         imageView = findViewById(R.id.imageId);
         //find textview
         textView = findViewById(R.id.textId);
+
+        Intent intent = getIntent();
+        bitmap = (Bitmap) intent.getParcelableExtra("IMAGE");
+        imageView.setImageBitmap(bitmap);s
+
+
+
+
+
         //check app level permission is granted for Camera
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             //grant the permission
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 101);
         }
+
+
     }
 
     public void doProcess(View view) {
         //open the camera => create an Intent object
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, 101);
+        System.out.println("Button Clicked");
+        System.out.println("Do Process runs");
+
+        Intent cameraActivityIntent = new Intent(getApplicationContext(), CameraActivity.class);
+        startActivity(cameraActivityIntent);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle bundle = data.getExtras();
         //from bundle, extract the image
-        Bitmap bitmap = (Bitmap) bundle.get("data");
         //set image in imageview
         imageView.setImageBitmap(bitmap);
         //process the image
@@ -82,5 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                 });
+    }
+
+
+    public void OCR(View view) {
+
     }
 }

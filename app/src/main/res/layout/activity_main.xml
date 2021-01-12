@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:text="take pic"
         android:onClick="doProcess"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="view_finder" type="id" />
+    <item name="imageButton2" type="id" />
+    <item name="captureImg" type="id" />
+    <item name="capture" type="id" />
+    <item name="linearLayout" type="id" />
+    <item name="camera" type="id" />
+    <item name="imgCapture" type="id" />
+    <item name="ivBitmap" type="id" />
+</resources>
