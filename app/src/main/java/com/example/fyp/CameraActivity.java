@@ -1,5 +1,6 @@
 package com.example.fyp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -34,7 +35,9 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -112,6 +115,9 @@ public class CameraActivity extends AppCompatActivity {
                     {
                         System.out.println("inside onCapture Sucess");
                         Bitmap bitmap = textureView.getBitmap();
+
+
+
                         System.out.println("line 117");
                         returnToMain(bitmap);
 
@@ -124,10 +130,27 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         public void returnToMain(Bitmap bitmap){
-        Intent intent = new Intent(this, MainActivity.class);
-        //Add constant for String
-        intent.putExtra("IMAGE",bitmap);
-        startActivity(intent);
+
+
+            try {
+                //Write file
+                String filename = "bitmap.png";
+                FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                //Cleanup
+                stream.close();
+                bitmap.recycle();
+
+                //Pop intent
+                Intent in1 = new Intent(this, MainActivity.class);
+                in1.putExtra("image", filename);
+                startActivity(in1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
 
         }
 
