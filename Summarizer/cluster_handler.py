@@ -7,7 +7,7 @@ import numpy as np
 
 
 class Clusterer:
-    def __init__(self, transformer: str = 'PCA', algorithm: str = 'kmeans', random_state=1234, centroid_min=.4e10):
+    def __init__(self, transformer: str = 'PCA', algorithm: str = 'KMeans', random_state=1234, centroid_min=.4e10):
         self.transformer = transformer
         self.algorithm = algorithm
         self.random_state = random_state
@@ -32,6 +32,8 @@ class Clusterer:
 
     def cluster(self, sentence_embeddings, k):
         # cluster_args  by k
+        if k <= 0:
+            return []
         cur_arg = -1
         args = {}
         used_idx = []

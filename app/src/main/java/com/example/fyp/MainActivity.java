@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -39,17 +40,17 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     Bitmap bitmap;
     Button logOutButton;
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("Main Activity is running");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Get User Information
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        Log.d("tag","onCreate" +firebaseAuth.getCurrentUser().getEmail() + firebaseAuth.getCurrentUser().getDisplayName());
-        logOutButton =findViewById(R.id.button);
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        //Get User Information
+        logOutButton =findViewById(R.id.button);
         //find imageview
         imageView = findViewById(R.id.imageId);
         //find textview
@@ -104,16 +105,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onStart(){
+        super.onStart();
+        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        //User is logged in
+        if(mFirebaseUser!= null) {
+        }
+        else{
+            //No one is logged in
+            startActivity(new Intent(this,LoginActivity.class));
+            finish();
+        }
+
+    }
+
+
     public void doProcess(View view) {
         //open the camera => create an Intent object
-        System.out.println("Button Clicked");
-        System.out.println("Do Process runs");
-        Log.d("tag","Camera is Pressed");
-
-
         Intent cameraActivityIntent = new Intent(getApplicationContext(), CameraActivity.class);
         startActivity(cameraActivityIntent);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -132,6 +144,7 @@ public void logout(final View view) {
         @Override
         public void onSuccess(Void aVoid) {
             startActivity(new Intent(view.getContext(),LoginActivity.class));
+            finish();
         }
     }).addOnFailureListener(new OnFailureListener() {
         @Override
