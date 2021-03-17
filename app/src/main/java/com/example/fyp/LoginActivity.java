@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v){
                 signIn();
 
+
             }
         });
 
@@ -118,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
     }
 
     @Override
@@ -150,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = fAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("Error", "signInWithCredential:failure", task.getException());

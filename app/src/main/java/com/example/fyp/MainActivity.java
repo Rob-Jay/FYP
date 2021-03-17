@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +23,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -38,88 +36,47 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView textView;
-    Bitmap bitmap;
     Button logOutButton;
     private FirebaseAuth mFirebaseAuth;
+    private static final String TAG = "SummarizeActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mFirebaseAuth = FirebaseAuth.getInstance();
-
         //Get User Information
-        logOutButton =findViewById(R.id.button);
+        logOutButton = findViewById(R.id.button);
         //find imageview
         imageView = findViewById(R.id.imageId);
         //find textview
         textView = findViewById(R.id.textId);
-        Bitmap bitmap = null;
-        String filename = getIntent().getStringExtra("image");
-        try {
-            FileInputStream is = this.openFileInput(filename);
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-            //1. create a FirebaseVisionImage object from a Bitmap
-            FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
-            //2. Get an instance of FirebaseVision using a cloudTextRecognizer
-            FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
-                    .getCloudTextRecognizer();
-            //3. Create a task to process the image
-            Task<FirebaseVisionText> result =
-                    detector.processImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                        @Override
-                        public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                            String s = firebaseVisionText.getText();
-                            textView.setText(s);
-                        }
-                    })
-                            .addOnFailureListener(
-                                    new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-                                        }
-                                    });
-
-
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-
 
         //check app level permission is granted for Camera
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             //grant the permission
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 101);
         }
-
-
     }
 
-    public void onStart(){
+
+    //Checking if someone is logged in. If True stay in Main activity
+    //else move back to Login
+    //OnStart Called When Activity starts for the first time.
+    public void onStart() {
         super.onStart();
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
         //User is logged in
-        if(mFirebaseUser!= null) {
-        }
-        else{
+        if (mFirebaseUser != null) {
+        } else {
             //No one is logged in
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-
     }
 
-
+    //OnClickMethod to Open Camera activity from the take picture button
     public void doProcess(View view) {
         //open the camera => create an Intent object
         Intent cameraActivityIntent = new Intent(getApplicationContext(), CameraActivity.class);
@@ -131,26 +88,32 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //from bundle, extract the image
         //set image in imageview
-
     }
 
-//Logging the user out
-public void logout(final View view) {
-    FirebaseAuth.getInstance().signOut();
-    Log.d("tag","LogoutButton is Pressed");
+    //Logging the user out by using get Instance.signout for regualr email
+//GoogleSignIn.getClient if they are signed in with Gmail
+    public void logout(final View view) {
+        FirebaseAuth.getInstance().signOut();
+        Log.d("tag", "LogoutButton is Pressed");
 
-    GoogleSignIn.getClient(this,new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
-            .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
-        @Override
-        public void onSuccess(Void aVoid) {
-            startActivity(new Intent(view.getContext(),LoginActivity.class));
-            finish();
-        }
-    }).addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            Toast.makeText(MainActivity.this, "Signout Failed.", Toast.LENGTH_SHORT).show();
-        }
-    });
-}
+        GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
+                .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                startActivity(new Intent(view.getContext(), LoginActivity.class));
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Signout Failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //OnClickMethod to open SummarizeActivity
+    public void summarize(View view) {
+        startActivity(new Intent(getApplicationContext(), SummarizeActivity.class));
+        finish();
+    }
 }

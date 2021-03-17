@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FYP">
-        <activity android:name=".ViewSummarization" />
+        <activity android:name=".SummarizeActivity" />
         <activity android:name=".SignUp" />
         <activity android:name=".LoginActivity"/>
 

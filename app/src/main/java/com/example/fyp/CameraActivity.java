@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
 import android.view.Surface;
@@ -51,6 +52,7 @@ public class CameraActivity extends AppCompatActivity {
     String filepath = null;
     private FloatingActionButton btnCapture ;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private static final String TAG = "CameraActivity";
 
 
     @Override
@@ -58,41 +60,32 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         getSupportActionBar().hide();
-
         textureView = (TextureView) findViewById(R.id.view_finder);
         btnCapture  = findViewById(R.id.btnCapture );
-
         System.out.println("On Create Runs");
-
-
         if (allPermissionGranted()) {
             startCamera();
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
     }
-
-
+    //settings for camera when Activity starts
     private void startCamera() {
+        Log.d(TAG, "startActivity for Camera is running");
         System.out.println("Start Camera runs");
-
-
         CameraX.unbindAll();
-
         Rational aspectRatio = new Rational(textureView.getWidth(), textureView.getHeight());
         Size screen = new Size(textureView.getWidth(), textureView.getHeight());
-
         PreviewConfig pConfig = new PreviewConfig.Builder().setLensFacing(CameraX.LensFacing.BACK).setTargetAspectRatio(aspectRatio).setTargetResolution(screen).build();
         Preview preview = new Preview(pConfig);
-
         preview.setOnPreviewOutputUpdateListener(
                 new Preview.OnPreviewOutputUpdateListener() {
                     @Override
                     public void onUpdated(Preview.PreviewOutput output) {
+                        Log.d(TAG, "onUpdated for CameraActivity is running");
                         ViewGroup parent = (ViewGroup) textureView.getParent();
                         parent.removeView(textureView);
                         parent.addView(textureView, 0);
-
                         textureView.setSurfaceTexture(output.getSurfaceTexture());
                         updateTransform();
                     }
@@ -102,12 +95,14 @@ public class CameraActivity extends AppCompatActivity {
                 .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
         final ImageCapture imgCap = new ImageCapture(imageCaptureConfig);
 
+        //On click listener for button Capture
         System.out.println("before Set On click listener");
         btnCapture .setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             { System.out.println("onClick listener");
+                Log.d(TAG, "onClick for CameraActivity is running");
                 imgCap.takePicture(new ImageCapture.OnImageCapturedListener()
                 {
                     @Override
@@ -115,12 +110,8 @@ public class CameraActivity extends AppCompatActivity {
                     {
                         System.out.println("inside onCapture Sucess");
                         Bitmap bitmap = textureView.getBitmap();
-
-
-
-                        System.out.println("line 117");
-                        returnToMain(bitmap);
-
+                        ProcessBitmap(bitmap);
+                        finish();
                     }
 
                 });
@@ -129,28 +120,28 @@ public class CameraActivity extends AppCompatActivity {
 
         }
 
-        public void returnToMain(Bitmap bitmap){
-
-
+        //Process Bitmap to the next activity.
+        //Method creates a png file and compresses the bitmap into the png
+    //this is to allow data to be passed between activitys.
+        public void ProcessBitmap(Bitmap bitmap){
             try {
+                Log.d(TAG, "Process Bitmap for CameraActivity is running");
+
                 //Write file
                 String filename = "bitmap.png";
                 FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
                 //Cleanup
                 stream.close();
                 bitmap.recycle();
-
                 //Pop intent
-                Intent in1 = new Intent(this, MainActivity.class);
-                in1.putExtra("image", filename);
-                startActivity(in1);
+                Intent intent = new Intent(this, SummarizeActivity.class);
+                intent.putExtra("image", filename);
+                startActivity(intent);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
 
         }
 
@@ -159,31 +150,27 @@ public class CameraActivity extends AppCompatActivity {
 
 
 
-
-
-
+    //Checks for Camera permissions
     private boolean allPermissionGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "No permissions given for camera activity");
+
                 return false;
             }
         }
         return true;
     }
 
-
     private void updateTransform() {
-
+        Log.d(TAG, "UpdateTransformer for CameraActivity is running");
         Matrix mx = new Matrix();
         float w = textureView.getMeasuredWidth();
         float h = textureView.getMeasuredHeight();
-
         float cX = w / 2f;
         float cY = h / 2f;
-
         int rotationDgr;
         int rotation = (int) textureView.getRotation();
-
         switch (rotation) {
             case Surface.ROTATION_0:
                 rotationDgr = 0;
@@ -200,14 +187,11 @@ public class CameraActivity extends AppCompatActivity {
             default:
                 return;
         }
-
         mx.postRotate((float) rotationDgr, cX, cY);
         textureView.setTransform(mx);
     }
-
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionGranted()) {
                 startCamera();
@@ -217,19 +201,13 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     }
-
     private Bitmap imageProxyToBitmap(ImageProxy image)
     {
-        System.out.println("line 196");
-
+        Log.d(TAG, "imageProxyToBitmap for CameraActivity is running");
         ImageProxy.PlaneProxy planeProxy = image.getPlanes()[0];
         ByteBuffer buffer = planeProxy.getBuffer();
-        System.out.println("line 119");
-
         byte[] bytes = new byte[buffer.remaining()];
-        System.out.println("line 202");
         buffer.get(bytes);
-
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }
