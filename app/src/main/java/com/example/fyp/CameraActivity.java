@@ -138,6 +138,7 @@ public class CameraActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SummarizeActivity.class);
                 intent.putExtra("image", filename);
                 startActivity(intent);
+                finish();
 
             } catch (Exception e) {
                 e.printStackTrace();
