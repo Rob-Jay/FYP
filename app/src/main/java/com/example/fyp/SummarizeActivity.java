@@ -37,6 +37,10 @@ public class SummarizeActivity extends AppCompatActivity {
     ImageView ScanTextImg;
     String originalText;
     private static String TAG = "SUMMARIZEACTIVITY";
+    private static String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
+    private static String KEY_SCAN_TEXT = "SCANTEXT";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,12 @@ public class SummarizeActivity extends AppCompatActivity {
         saveSummaryBtn = findViewById(R.id.save_summary_btn);
         Bitmap bitmap = null;
         String filename = getIntent().getStringExtra("image");
+        String scan_text = getIntent().getStringExtra(KEY_SCAN_TEXT);
+        String summary_text = getIntent().getStringExtra(KEY_SUMMARY_TEXT);
         try {
+            sTextView.append(summary_text);
+            textView.append(scan_text);
+
             FileInputStream is = this.openFileInput(filename);
             bitmap = BitmapFactory.decodeStream(is);
             is.close();
@@ -86,42 +95,22 @@ public class SummarizeActivity extends AppCompatActivity {
 
 
     }
-//    protected void onSaveInstanceState(@NonNull Bundle outState ) {
-//        super.onSaveInstanceState(outState);
-//        Log.d(TAG,"On saved instance state");
-//        CharSequence text_view =textView.getText();
-//        CharSequence stext_view =sTextView.getText();
-//        outState.putCharSequence("textView",text_view);
-//        outState.putCharSequence("stextView",stext_view);
-//
-//
-//    }
-//
-//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState ) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        Log.d(TAG,"On restore instance state");
-//        CharSequence store_text_view = savedInstanceState.getCharSequence("textView");
-//        CharSequence store_Summary_text_view = savedInstanceState.getCharSequence("stextView");
-//        Log.d(TAG,"text View has been read");
-//
-//        textView.setText(store_text_view);
-//        sTextView.setText(store_Summary_text_view);
-//
-//
-//    }
 
     public void ScanText(View view) {
         //open the camera => create an Intent object
+        String scan_text = textView.getText().toString();
+        String summary_text = sTextView.getText().toString();
         Intent cameraActivityIntent = new Intent(getApplicationContext(), CameraActivity.class);
+        cameraActivityIntent.putExtra(KEY_SUMMARY_TEXT,scan_text);
+        cameraActivityIntent.putExtra(KEY_SCAN_TEXT,summary_text);
+        Log.d(TAG,"Intent is being passed");
+
         startActivity(cameraActivityIntent);
         finish();
+        Log.d(TAG,"Intent has passed");
 
 
-        Intent intent=new Intent(this,CameraActivity.class);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+
     }
 
 

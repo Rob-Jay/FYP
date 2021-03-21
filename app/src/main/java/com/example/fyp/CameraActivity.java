@@ -53,15 +53,29 @@ public class CameraActivity extends AppCompatActivity {
     private FloatingActionButton btnCapture ;
     private Executor executor = Executors.newSingleThreadExecutor();
     private static final String TAG = "CameraActivity";
+    Switch flashControl;
+    CameraManager cameraManager;
+    private static String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
+    private static String KEY_SCAN_TEXT = "SCANTEXT";
+    private boolean torch;
+
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         getSupportActionBar().hide();
         textureView = (TextureView) findViewById(R.id.view_finder);
         btnCapture  = findViewById(R.id.btnCapture );
+        //Adding flash
+        flashControl = findViewById(R.id.flash_light);
+        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+
         System.out.println("On Create Runs");
         if (allPermissionGranted()) {
             startCamera();
@@ -135,8 +149,14 @@ public class CameraActivity extends AppCompatActivity {
                 stream.close();
                 bitmap.recycle();
                 //Pop intent
+
+                String scan_text = getIntent().getStringExtra(KEY_SCAN_TEXT);
+                String summary_text = getIntent().getStringExtra(KEY_SUMMARY_TEXT);
                 Intent intent = new Intent(this, SummarizeActivity.class);
                 intent.putExtra("image", filename);
+                intent.putExtra(KEY_SUMMARY_TEXT, scan_text);
+                intent.putExtra(KEY_SCAN_TEXT, summary_text);
+                torch = false;
                 startActivity(intent);
                 finish();
 
@@ -211,5 +231,8 @@ public class CameraActivity extends AppCompatActivity {
         buffer.get(bytes);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
+
+
+
 }
 

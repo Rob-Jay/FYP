@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "SummarizeActivity";
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
