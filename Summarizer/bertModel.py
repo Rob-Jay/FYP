@@ -1,17 +1,70 @@
 import torch
-from pytorch_pretrained_bert import BertTokenizer
-from tensorflow.keras import models
-from transformers import BertTokenizer, TFBertModel
 
-from SentenceTransformer import SentenceTransformer
+from transformers import BertTokenizer, BertModel
+import numpy as np
+import torch
 
 
-class BertModelx:
-    def __init__(self):
-        word_embedding_model = models.Transformer('bert-base-uncased')
+class BertModel:
+    def __init__(self, model=BertModel.from_pretrained('bert-large-uncased',
+                                                       output_hidden_states=True,
+                                                       # Whether the model returns all hidden-states.
+                                                       ), evaluation=False,
+                 tokenizer=BertTokenizer.from_pretrained('bert-large-uncased')):
 
-    def transform_sentence(self, sentences, word_embedding_model=None):
-        pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension())
+        self.model = model
+        self.evaluation = evaluation
+        self.tokenizer = tokenizer
 
-        model = SentenceTransformer(modules=[self.word_embedding_model, pooling_model])
-        model.encode('This is an example')
+    def configure_evaluation(self, evaluation):
+        if evaluation:
+            return False
+        else:
+            return True
+
+    def shape_embeddings(self,sentence_embeddings):
+        sentence_embeddings = np.array([np.array(x) for x in sentence_embeddings])
+        sentence_embeddings = sentence_embeddings.reshape(-1, 1024)
+        return sentence_embeddings
+
+
+    def transform(self, sentences):
+        sentence_embeddings = []
+        for sentence in sentences:
+            # Adding tags to sentences
+            marked_text = "[CLS] " + sentence + " [SEP]"
+            tokenized_text = self.tokenizer.tokenize(marked_text)
+            indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokenized_text)
+
+            # Segment sentence
+            segments_ids = [1] * len(tokenized_text)
+
+            # Convert inputs to PyTorch tensors
+            tokens_tensor = torch.tensor([indexed_tokens])
+            segments_tensors = torch.tensor([segments_ids])
+
+            if not self.evaluation:
+                # Put the model in "evaluation" mode, meaning feed-forward operation.
+                self.model.eval()
+                evaluation = self.configure_evaluation(self.evaluation)
+
+            with torch.no_grad():
+
+                outputs = self.model(tokens_tensor, segments_tensors)
+                # Evaluating the model will return a different number of objects based on
+                # how it's  configured in the `from_pretrained` call earlier. In this case,
+                # becase we set `output_hidden_states = True`, the third item will be the
+                # hidden states from all layers. See the documentation for more details:
+                # https://huggingface.co/transformers/model_doc/bert.html#bertmodel
+                hidden_states = outputs[2]
+            token_vecs = hidden_states[-2][0]
+
+            # Calculate the average of all 22 token vectors.
+            sentence_embedding = torch.mean(token_vecs, dim=0)
+            sentence_embeddings.append(sentence_embedding)
+        sentence_embeddings = self.shape_embeddings(sentence_embeddings)
+        return sentence_embeddings
+
+    def get_embeddings(self, sentences):
+        sentence_embeddings = self.transform(sentences)
+        return sentence_embeddings

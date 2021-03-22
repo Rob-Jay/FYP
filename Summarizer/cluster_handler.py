@@ -18,6 +18,7 @@ class Clusterer:
             return GaussianMixture(n_components=k, random_state=self.random_state)
         return KMeans(n_clusters=k, random_state=self.random_state)
 
+
     def __get_transformer(self):
         if self.transformer == 'MDS':
             return manifold.Mds(n_components=2)
