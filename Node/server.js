@@ -2,8 +2,9 @@ const express = require('express')
 const exec = require('child_process').exec;
 const app = express();
 
-app.get('/test', (req, res) => {
+app.post('/test', (req, res) => {
     res.json({ message: 'great success' })
+        //res.send(JSON.stringify("Great Success"))
 })
 
 
@@ -15,6 +16,8 @@ app.get('/action', (req, res) => {
     // });
 
     //let string = req.body.sentences;
+
+    //Createing a req.number of sentences and text
 
     let string = "Brazil is a city in ireland. Brazil is my favourite place to be. Ireland is in europe. Cheese baby!!!";
 
