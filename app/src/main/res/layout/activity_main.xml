@@ -38,4 +38,11 @@
         android:text="Summarize"
         android:onClick="summarize"/>
 
+    <Button
+        android:id="@+id/summarize_activity_btn2"
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:onClick="ViewSummaryFiles"
+        android:text="View Files" />
+
 </LinearLayout>

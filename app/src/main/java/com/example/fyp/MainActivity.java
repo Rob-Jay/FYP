@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "SummarizeActivity";
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
     //OnClickMethod to open SummarizeActivity
     public void summarize(View view) {
         startActivity(new Intent(getApplicationContext(), SummarizeActivity.class));
+        finish();
+    }
+
+    public void ViewSummaryFiles(View view) {
+        startActivity(new Intent(getApplicationContext(), ViewFilesActivity.class));
         finish();
     }
 }

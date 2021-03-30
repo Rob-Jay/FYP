@@ -18,7 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-
+    <ImageView
+        android:id="@+id/toolbar_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#777777" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCapture"
@@ -34,14 +42,29 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
-        android:id="@+id/flash_light"
+        android:id="@+id/flashLight"
+        android:padding="1dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="FlashLight"
-        android:enabled="true"
+        android:layout_marginStart="324dp"
+        android:layout_marginTop="4dp"
+        android:text="Flash Off"
+        android:textSize="10dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Button
+        android:id="@+id/aspect_ratio"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:textSize="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="272dp"
+        android:onClick="ChangeCamera"
+        android:text="aspect"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

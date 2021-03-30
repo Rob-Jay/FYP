@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
@@ -15,8 +16,10 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,44 +53,49 @@ public class CameraActivity extends AppCompatActivity {
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
     TextureView textureView;
     String filepath = null;
-    private FloatingActionButton btnCapture ;
+    ImageView toolbarBack;
+    private FloatingActionButton btnCapture;
     private Executor executor = Executors.newSingleThreadExecutor();
     private static final String TAG = "CameraActivity";
-    Switch flashControl;
-    CameraManager cameraManager;
     private static String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
     private static String KEY_SCAN_TEXT = "SCANTEXT";
-    private boolean torch;
-
-
-
+    Switch flashLight;
+    boolean flash;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate for Camera is running");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         getSupportActionBar().hide();
         textureView = (TextureView) findViewById(R.id.view_finder);
-        btnCapture  = findViewById(R.id.btnCapture );
-        //Adding flash
-        flashControl = findViewById(R.id.flash_light);
-        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-
+        btnCapture = findViewById(R.id.btnCapture);
+        flashLight = findViewById(R.id.flashLight);
+        flash = false;
+        toolbarBack =findViewById(R.id.toolbar_back);
         System.out.println("On Create Runs");
         if (allPermissionGranted()) {
             startCamera();
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+
+        toolbarBack.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                back(view);
+            }
+        });
     }
+
     //settings for camera when Activity starts
     private void startCamera() {
         Log.d(TAG, "startActivity for Camera is running");
-        System.out.println("Start Camera runs");
         CameraX.unbindAll();
+
+        //Setting ratio and view for camera view
         Rational aspectRatio = new Rational(textureView.getWidth(), textureView.getHeight());
         Size screen = new Size(textureView.getWidth(), textureView.getHeight());
         PreviewConfig pConfig = new PreviewConfig.Builder().setLensFacing(CameraX.LensFacing.BACK).setTargetAspectRatio(aspectRatio).setTargetResolution(screen).build();
@@ -111,18 +119,20 @@ public class CameraActivity extends AppCompatActivity {
 
         //On click listener for button Capture
         System.out.println("before Set On click listener");
-        btnCapture .setOnClickListener(new View.OnClickListener()
-        {
+        btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            { System.out.println("onClick listener");
+
+
+
+            //Button to click and capture photo
+            public void onClick(View view) {
+                System.out.println("onClick listener");
                 Log.d(TAG, "onClick for CameraActivity is running");
-                imgCap.takePicture(new ImageCapture.OnImageCapturedListener()
-                {
+                imgCap.takePicture(new ImageCapture.OnImageCapturedListener() {
                     @Override
-                    public void onCaptureSuccess(ImageProxy image, int rotationDegrees)
-                    {
-                        System.out.println("inside onCapture Sucess");
+                    public void onCaptureSuccess(ImageProxy image, int rotationDegrees) {
+                        System.out.println("inside onCapture Success");
+                        preview.enableTorch(false);
                         Bitmap bitmap = textureView.getBitmap();
                         ProcessBitmap(bitmap);
                         finish();
@@ -130,41 +140,55 @@ public class CameraActivity extends AppCompatActivity {
 
                 });
             }
-        });    CameraX.bindToLifecycle((LifecycleOwner)this, preview, imgCap);
+        });
+        CameraX.bindToLifecycle((LifecycleOwner) this, preview, imgCap);
+        //Adding flash
+        flashLight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    flash = true;
+                    flashLight.setText("Flash On");
 
-        }
+                } else {
+                    flash = false;
+                    flashLight.setText("Flash Off");
 
-        //Process Bitmap to the next activity.
-        //Method creates a png file and compresses the bitmap into the png
-    //this is to allow data to be passed between activitys.
-        public void ProcessBitmap(Bitmap bitmap){
-            try {
-                Log.d(TAG, "Process Bitmap for CameraActivity is running");
-
-                //Write file
-                String filename = "bitmap.png";
-                FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                //Cleanup
-                stream.close();
-                bitmap.recycle();
-                //Pop intent
-
-                String scan_text = getIntent().getStringExtra(KEY_SCAN_TEXT);
-                String summary_text = getIntent().getStringExtra(KEY_SUMMARY_TEXT);
-                Intent intent = new Intent(this, SummarizeActivity.class);
-                intent.putExtra("image", filename);
-                intent.putExtra(KEY_SUMMARY_TEXT, scan_text);
-                intent.putExtra(KEY_SCAN_TEXT, summary_text);
-                torch = false;
-                startActivity(intent);
-                finish();
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                }
+                preview.enableTorch(flash);
             }
+        });
+    }
 
+//Pass bitmap to Summarize activity
+    public void ProcessBitmap(Bitmap bitmap) {
+        try {
+            Log.d(TAG, "Process Bitmap for CameraActivity is running");
+
+            //Write file
+            String filename = "bitmap.png";
+            FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            //Cleanup
+            stream.close();
+            bitmap.recycle();
+            //Pop intent
+            String scan_text = getIntent().getStringExtra(KEY_SCAN_TEXT);
+            String summary_text = getIntent().getStringExtra(KEY_SUMMARY_TEXT);
+            Intent intent = new Intent(this, SummarizeActivity.class);
+
+            intent.putExtra("image", filename);
+            intent.putExtra(KEY_SUMMARY_TEXT, scan_text);
+            intent.putExtra(KEY_SCAN_TEXT, summary_text);
+
+            startActivity(intent);
+            finish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+    }
 
 
 
@@ -183,6 +207,8 @@ public class CameraActivity extends AppCompatActivity {
         return true;
     }
 
+
+//Rotation update
     private void updateTransform() {
         Log.d(TAG, "UpdateTransformer for CameraActivity is running");
         Matrix mx = new Matrix();
@@ -211,6 +237,7 @@ public class CameraActivity extends AppCompatActivity {
         mx.postRotate((float) rotationDgr, cX, cY);
         textureView.setTransform(mx);
     }
+
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
@@ -222,8 +249,8 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     }
-    private Bitmap imageProxyToBitmap(ImageProxy image)
-    {
+
+    private Bitmap imageProxyToBitmap(ImageProxy image) {
         Log.d(TAG, "imageProxyToBitmap for CameraActivity is running");
         ImageProxy.PlaneProxy planeProxy = image.getPlanes()[0];
         ByteBuffer buffer = planeProxy.getBuffer();
@@ -232,7 +259,14 @@ public class CameraActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
+    public void ChangeCamera(View view) {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        this.startActivity(intent);
+    }
 
-
+    public void back(View view){
+        startActivity(new Intent(getApplicationContext(), SummarizeActivity.class));
+        finish();
+    }
 }
 
