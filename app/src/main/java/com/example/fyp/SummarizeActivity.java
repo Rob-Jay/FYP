@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -19,12 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -99,12 +97,11 @@ public class SummarizeActivity extends AppCompatActivity {
                 save_summary(view);
             }
         });
-        scanTextBtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
+        scanTextBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 ScanText(view);
             }
         });
-
 
 
         //Calling posts method from Requests class
@@ -177,7 +174,7 @@ public class SummarizeActivity extends AppCompatActivity {
 
     private void clearSumText(View view) {
         Log.d(TAG, "Clear text has been pressed");
-        if ( sTextView.getText().toString().isEmpty()) {
+        if (sTextView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
         } else {
             sTextView.setText("");
@@ -231,13 +228,14 @@ public class SummarizeActivity extends AppCompatActivity {
 
     }
 
-    public void back(View view){
+    public void back(View view) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 
 
     public void save_summary(View view) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (sTextView.getText().toString().length() < 5) {
             Toast.makeText(this, "You do not have enough text to save your Summary", Toast.LENGTH_LONG).show();
         } else {
@@ -245,39 +243,30 @@ public class SummarizeActivity extends AppCompatActivity {
                 //Create a temporary file of the summarised text
                 String data = sTextView.getText().toString();
                 String filename = "";
-                if (data.length() < 10) {
-                    filename = data + "Summary" + ".txt";
+                if (data.length() < 7) {
+                    filename = data + "Summary";
                 } else {
-                    filename = data.substring(1, 9) + ".txt";
+                    filename = data.substring(1, 9);
                 }
-                Map<String, Object> note = new HashMap<>();
-                note.put(filename, filename);
-                note.put(data, data);
-
-                db.collection("Documents").document("test").set(note)
+                //Making an object of the summary
+                Summary summary = new Summary(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                        filename,
+                        data
+                        );
+                db.collection("Documents").document().set(summary)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                sTextView.setText("Success");
-                            }
+                                Intent intent = new Intent(getApplicationContext(), ViewFilesActivity.class);
+                                startActivity(intent);
+                                finish();                            }
                         })
-                        .addOnFailureListener(new  OnFailureListener(){
+                        .addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onFailure(@NonNull Exception e){
-
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Error:\t" + e);
                             }
                         });
-
-
-//            {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot){
-//                        Log.d(TAG, "File has been saved successfully");
-//                        startActivity(new Intent(getApplicationContext(), ViewFilesActivity.class));
-//                        finish();
-//                    }
-//                });
-                //Saving the file to firebase storage
             } catch (Exception e) {
                 Log.d(TAG, "Error:\t" + e);
                 e.printStackTrace();

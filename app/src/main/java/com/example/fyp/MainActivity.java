@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), SummarizeActivity.class));
         finish();
     }
-
     public void ViewSummaryFiles(View view) {
         startActivity(new Intent(getApplicationContext(), ViewFilesActivity.class));
         finish();

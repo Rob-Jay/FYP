@@ -1,61 +1,81 @@
 package com.example.fyp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class ViewFilesActivity extends AppCompatActivity {
     private static final String TAG = "ViewFilesActivity";
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference notebookRef = db.collection("Documents");
+    private TextView textViewData;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "I am Running");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_files);
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference listRef = storage.getReference().child("Documents");
-        try {
-            listRef.listAll()
-                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            for (StorageReference prefix : listResult.getPrefixes()) {
-                                Log.d(TAG, "This is Prefix");
-                                Log.d(TAG, "" + prefix);
+        textViewData = findViewById(R.id.text_view_data);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        notebookRef.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+                String data = "";
+                for (QueryDocumentSnapshot docSnapshot : queryDocumentSnapshots) {
+                    Summary summary = docSnapshot.toObject(Summary.class);
+                    String title = summary.getTitle();
+                    String description = summary.getTitle();
+                    data += "Title: " + title + "\nDescription: " + description + "\n\n";
+                    // Add to arraylist
+                }
+                textViewData.setText(data);
+            }
+        });
+    }
 
 
-                                // All the prefixes under listRef.
-                                // You may call listAll() recursively on them.
-                            }
+    public void loadNotes(View view) {
+        notebookRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        String data = "";
 
-                            for (StorageReference item : listResult.getItems()) {
-                                // All the items under listRef.
-                            }
+                        for (QueryDocumentSnapshot docSnapshot : queryDocumentSnapshots) {
+                            Summary summary = docSnapshot.toObject(Summary.class);
+                            String title = summary.getTitle();
+                            String description = summary.getTitle();
+                            data += "Title: " + title + "\nDescription: " + description + "\n\n";
+                            // Add to arraylist
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "Ha Fail");
+                        textViewData.setText(data);
 
-                            // Uh-oh, an error occurred!
-                        }
-                    });
-        }catch(Exception e){
-            Log.d(TAG, "Error:\t" + e);
 
-        }
-        Log.d(TAG, "I skipped everything above");
+                    }
+                });
+
+    }
+
+    public void addNote(View view) {
 
     }
 }

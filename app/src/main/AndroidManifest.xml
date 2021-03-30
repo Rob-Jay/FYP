@@ -18,6 +18,8 @@
         <activity android:name=".SummarizeActivity" />
         <activity android:name=".SignUp" />
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".ViewFilesActivity"/>
+
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
