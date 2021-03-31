@@ -31,17 +31,6 @@
                 android:padding="10dp"
                 android:src="@drawable/ic_arrow" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/p_semibold"
-                android:text="View Summarization"
-                android:textColor="#2e2e2e"
-                android:textSize="12dp" />
-
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -77,72 +66,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_dot"
-                        app:tint="#777777" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/p_reguler"
-                        android:text=" Type or paste your text into the box"
-                        android:textColor="#444444"
-                        android:textSize="9dp" />
-
-                    <LinearLayout
-                        android:id="@+id/add_education"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/bg_rounded_ractangle_5"
-                        android:backgroundTint="@color/purple_500"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="3dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="1dp">
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="1dp"
-                            android:adjustViewBounds="true"
-                            android:src="@drawable/ic_paste"
-                            app:tint="#ffffff" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="5dp"
-                            android:fontFamily="@font/p_reguler"
-                            android:gravity="center"
-                            android:text="Paste"
-                            android:textColor="#ffffff"
-                            android:textSize="8dp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_rounded_ractangle_10_bg_color"
                     android:backgroundTint="@color/white"
                     android:orientation="vertical"
                     android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/p_semibold"
+                        android:text="View Summarization"
+                        android:textColor="#2e2e2e"
+                        android:textSize="12dp" />
 
                     <EditText
                         android:id="@+id/text_view"
@@ -204,9 +144,69 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_dot"
+                            app:tint="#777777" />
+
+                        <LinearLayout
+                            android:id="@+id/add_education"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_rounded_ractangle_5"
+                            android:backgroundTint="@color/purple_500"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="3dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="1dp">
+
+                            <ImageView
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="1dp"
+                                android:adjustViewBounds="true"
+                                android:src="@drawable/ic_paste"
+                                app:tint="#ffffff" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="5dp"
+                                android:fontFamily="@font/p_reguler"
+                                android:gravity="center"
+                                android:text="Paste"
+                                android:textColor="#ffffff"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/p_reguler"
+                android:text=" Type or paste your text into the box"
+                android:textColor="#444444"
+                android:textSize="9dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

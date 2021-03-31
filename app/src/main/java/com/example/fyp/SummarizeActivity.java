@@ -173,22 +173,13 @@ public class SummarizeActivity extends AppCompatActivity {
     }
 
     private void clearSumText(View view) {
-        Log.d(TAG, "Clear text has been pressed");
         if (sTextView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
-        } else {
-            sTextView.setText("");
-        }
-    }
-
+        } else { sTextView.setText(""); } }
     private void clearScanText(View view) {
-        Log.d(TAG, "Clear text has been pressed");
         if (textView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
-        } else {
-            textView.setText("");
-        }
-    }
+        } else { textView.setText(""); } }
 
     private void Summarize(View view) {
         Log.d(TAG, "Summarize method is running");
@@ -243,17 +234,17 @@ public class SummarizeActivity extends AppCompatActivity {
                 //Create a temporary file of the summarised text
                 String data = sTextView.getText().toString();
                 String filename = "";
-                if (data.length() < 7) {
+                if (data.length() < 4) {
                     filename = data + "Summary";
                 } else {
-                    filename = data.substring(1, 9);
+                    filename = data.substring(0, 9);
                 }
                 //Making an object of the summary
-                Summary summary = new Summary(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                Summary summary = new Summary(
                         filename,
                         data
                         );
-                db.collection("Documents").document().set(summary)
+                db.collection(userId).document().set(summary)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
