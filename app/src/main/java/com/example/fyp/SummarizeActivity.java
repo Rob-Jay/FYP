@@ -36,20 +36,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class SummarizeActivity extends AppCompatActivity {
-    TextView textView;
-    TextView sTextView;
-    TextView clearScanTextBtn;
-    LinearLayout scanTextBtn;
-    TextView clearSumTextBtn;
-    TextView summarizeBtn;
-    LinearLayout saveSummaryBtn;
-    NumberPicker numeric_input;
-    LinearLayout toolbarBack;
+    private TextView textView;
+    private TextView sTextView;
+    private TextView clearScanTextBtn;
+    private LinearLayout scanTextBtn;
+    private TextView clearSumTextBtn;
+    private TextView summarizeBtn;
+    private LinearLayout saveSummaryBtn;
+    private NumberPicker numeric_input;
+    private LinearLayout toolbarBack;
     private static final String TAG = "SUMMARIZEACTIVITY";
     private static final String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
     private static final String KEY_SCAN_TEXT = "SCANTEXT";
     private static final String baseURL = "http://192.168.0.13:5000";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +58,24 @@ public class SummarizeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_summarization);
         //Entities from XML file located
         Log.d(TAG, "Summarize activity is running");
+
+        //Connecting to XML
         textView = findViewById(R.id.text_view);
         sTextView = findViewById(R.id.summary_text_view);
         clearScanTextBtn = findViewById(R.id.clear_text_btn);
         clearSumTextBtn = findViewById(R.id.clearSumTextBtn);
         toolbarBack = findViewById(R.id.toolbar_back);
-
         scanTextBtn = findViewById(R.id.add_text_btn);
         summarizeBtn = findViewById(R.id.summarize_btn);
         saveSummaryBtn = findViewById(R.id.save_summary_btn);
 
-        Log.d(TAG, "Retrofit is running");
+        //User numeric input with min and max value
+        numeric_input = findViewById(R.id.number_picker);
+        numeric_input.setMinValue(0);
+        numeric_input.setMaxValue(25);
 
-        //Connect to API
+
+        //On click listeners for buttons
         toolbarBack.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 back(view);
@@ -104,16 +110,9 @@ public class SummarizeActivity extends AppCompatActivity {
         });
 
 
-        //Calling posts method from Requests class
-        //User numeric input with min and max value
-        numeric_input = findViewById(R.id.number_picker);
-        numeric_input.setMinValue(0);
-        numeric_input.setMaxValue(25);
-        //Getting information from OCR activity
+        //Checking if the acticty was passed an intent from camera activity.
         Bitmap bitmap = null;
         String filename = getIntent().getStringExtra("image");
-
-
         Log.d(TAG, "Before Try block ");
         try {
             String scan_text = getIntent().getStringExtra(KEY_SCAN_TEXT);
@@ -125,6 +124,7 @@ public class SummarizeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         try {
+            //Convert Image to text with Firebase
             FileInputStream is = this.openFileInput(filename);
             bitmap = BitmapFactory.decodeStream(is);
             is.close();
@@ -159,7 +159,7 @@ public class SummarizeActivity extends AppCompatActivity {
         }
     }
 
-
+//Open camera activity and pass text from previous scans
     public void ScanText(View view) {
         //open the camera => create an Intent object
         String scan_text = textView.getText().toString();
@@ -171,15 +171,18 @@ public class SummarizeActivity extends AppCompatActivity {
         startActivity(cameraActivityIntent);
         finish();
     }
-
+    //Clears summary textview
     private void clearSumText(View view) {
         if (sTextView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
         } else { sTextView.setText(""); } }
+    //Clears Scanned textview
     private void clearScanText(View view) {
         if (textView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
         } else { textView.setText(""); } }
+
+
 
     private void Summarize(View view) {
         Log.d(TAG, "Summarize method is running");
@@ -191,8 +194,6 @@ public class SummarizeActivity extends AppCompatActivity {
             Log.d(TAG, "Summarize method is running after retrofit and being passed baseurl");
             Placeholder placeholder = retrofit.create(Placeholder.class);
             Requests post = new Requests(numeric_input.getValue(), textView.getText().toString());
-            Log.d(TAG, "Post request has been made containing:\t" + numeric_input.getValue() + "\t" + textView.getText().toString());
-            Log.d(TAG, "Request has been made:\t" + post);
             Call<Requests> call = placeholder.createPost(post);
             Log.d(TAG, "Call has been made:\t" + call);
             call.enqueue(new Callback<Requests>() {
@@ -207,7 +208,6 @@ public class SummarizeActivity extends AppCompatActivity {
                     content += postResponse.getSummarised_text();
                     sTextView.setText(content);
                 }
-
                 @Override
                 public void onFailure(Call<Requests> call, Throwable t) {
                     Log.d(TAG, "Call has failed:\t" + t);
@@ -219,12 +219,17 @@ public class SummarizeActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
+    //Brings user to main activity
     public void back(View view) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 
-
+//Saves text to Firebasefirestore and send user to the file view activity
     public void save_summary(View view) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (sTextView.getText().toString().length() < 5) {

@@ -11,7 +11,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@drawable/bg_rounded_ractangle_10_bg_color"
+        >
 
         <TextView
             android:id="@+id/text_view_title"

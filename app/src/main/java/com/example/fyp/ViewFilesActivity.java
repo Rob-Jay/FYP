@@ -1,5 +1,6 @@
 package com.example.fyp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,5 +92,9 @@ public class ViewFilesActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+    public void back(View view) {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 }

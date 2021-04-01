@@ -51,15 +51,15 @@ import java.util.concurrent.Executors;
 public class CameraActivity extends AppCompatActivity {
     private final int REQUEST_CODE_PERMISSIONS = 101;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
-    TextureView textureView;
+    private TextureView textureView;
     String filepath = null;
-    ImageView toolbarBack;
-    private FloatingActionButton btnCapture;
+    private ImageView toolbarBack;
+    private ImageView btnCapture;
     private Executor executor = Executors.newSingleThreadExecutor();
     private static final String TAG = "CameraActivity";
     private static String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
     private static String KEY_SCAN_TEXT = "SCANTEXT";
-    Switch flashLight;
+    private Switch flashLight;
     boolean flash;
 
 

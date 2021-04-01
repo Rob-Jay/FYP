@@ -20,51 +20,66 @@
 
     <ImageView
         android:id="@+id/toolbar_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
         android:src="@drawable/ic_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#777777" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnCapture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        app:backgroundTint="@android:color/black"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <Switch
         android:id="@+id/flashLight"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="2dp"
         android:padding="1dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="324dp"
-        android:layout_marginTop="4dp"
         android:text="Flash Off"
         android:textSize="10dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/aspect_ratio"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-    <Button
-        android:id="@+id/aspect_ratio"
-        android:layout_width="70dp"
-        android:layout_height="30dp"
-        android:textSize="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="272dp"
-        android:onClick="ChangeCamera"
+
+    <ImageView
+        android:id="@+id/camera_menu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_baseline_menu_24"
         android:text="aspect"
+        android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/aspect_ratio"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="2dp"
+        android:onClick="ChangeCamera"
+        android:src="@drawable/ic_baseline_aspect_ratio_24"
+        android:text="aspect"
+        android:textSize="10dp"
+        app:layout_constraintStart_toEndOf="@+id/toolbar_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnCapture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_baseline_camera_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#ffffff"
-    tools:context=".ViewSummarization">
+    tools:context=".SummarizeActivity">
+
 
     <LinearLayout
         android:id="@+id/toolbar"
@@ -52,7 +53,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:backgroundTint="#F2F4F4"
+            >
 
 
             <LinearLayout
@@ -226,7 +229,7 @@
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_rounded_ractangle_5"
-                    android:backgroundTint="#2682ff"
+                    android:backgroundTint="#509EDD"
                     android:orientation="horizontal"
                     android:padding="10dp">
 
@@ -252,7 +255,7 @@
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_rounded_ractangle_5"
-                    android:backgroundTint="#2682ff"
+                    android:backgroundTint="#509EDD"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -311,7 +314,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp">
 
                     <ImageView
                         android:layout_width="6dp"
@@ -371,7 +375,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_rounded_ractangle_10_bg_color"
                     android:backgroundTint="@color/white"
@@ -399,6 +403,7 @@
                             android:layout_marginLeft="3dp"
                             android:layout_weight="1"
                             android:fontFamily="@font/p_reguler"
+                            android:layout_marginTop="15dp"
                             android:textColor="#444444"
                             android:textSize="9dp" />
 
@@ -450,7 +455,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/bg_rounded_ractangle_10_bg_color"
-                    android:backgroundTint="@color/purple_500"
+                    android:backgroundTint="#509EDD"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"

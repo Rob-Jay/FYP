@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView textView;
-    Button logOutButton;
     private FirebaseAuth mFirebaseAuth;
     private static final String TAG = "SummarizeActivity";
+    LinearLayout logOutButton;
 
 
     @Override

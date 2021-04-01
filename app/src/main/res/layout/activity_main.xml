@@ -1,48 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageId"/>
-    <Button
+    <LinearLayout
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="take pic"
-        android:onClick="doProcess"/>
+        android:layout_height="50dp"
+        android:background="#CACFD2"
+        android:elevation="1dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textId"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-    <Button
+            <ImageView
+                android:id="@+id/toolbar_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_logo" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/p_semibold"
+                android:text="FYP SCANNER"
+                android:textColor="#2e2e2e"
+                android:textSize="12dp" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:padding="10dp"
+                android:src="@drawable/ic_user" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button"
+        android:layout_below="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#D0D3D4"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:padding="25dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_ractangle_10_bg_color"
+                    android:backgroundTint="#F2F4F4"
+                    android:onClick="doProcess"
+                    android:orientation="vertical"
+                    android:foregroundTint="@color/black"
+                    android:padding="25dp">
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_camera" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/p_semibold"
+                        android:gravity="center"
+                        android:text="Scan Text"
+                        android:textColor="#2e2e2e"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/summarize_activity_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_ractangle_10_bg_color"
+                    android:backgroundTint="#F2F4F4"
+                    android:onClick="summarize"
+                    android:orientation="vertical"
+                    android:padding="25dp">
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_report" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/p_semibold"
+                        android:gravity="center"
+                        android:text="Summarize"
+                        android:textColor="#2e2e2e"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_ractangle_10_bg_color"
+                    android:backgroundTint="#F2F4F4"
+                    android:onClick="ViewSummaryFiles"
+                    android:orientation="vertical"
+                    android:padding="25dp">
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_logo" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/p_semibold"
+                        android:gravity="center"
+                        android:text="View Summarys"
+                        android:textColor="#2e2e2e"
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/textId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
         android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:onClick="logout"
-        android:text="Logout"
-        />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_rounded_ractangle_10_bg_color"
+        android:backgroundTint="#509EDD"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
 
-    <Button
-        android:id="@+id/summarize_activity_btn"
-        android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:text="Summarize"
-        android:onClick="summarize"/>
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="1dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_logout"
+            app:tint="@color/white" />
 
-    <Button
-        android:id="@+id/summarize_activity_btn2"
-        android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:onClick="ViewSummaryFiles"
-        android:text="View Files" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:fontFamily="@font/p_reguler"
+            android:gravity="center"
+            android:text="Logout"
+            android:textColor="#ffffff"
+            android:textSize="10dp" />
+    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
