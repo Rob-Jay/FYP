@@ -48,7 +48,7 @@ public class SummarizeActivity extends AppCompatActivity {
     private static final String TAG = "SUMMARIZEACTIVITY";
     private static final String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
     private static final String KEY_SCAN_TEXT = "SCANTEXT";
-    private static final String baseURL = "http://192.168.0.13:5000";
+    private static final String baseURL = "http://192.168.0.13:5000/";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Placeholder placeholder;
 
@@ -202,26 +202,22 @@ public class SummarizeActivity extends AppCompatActivity {
         }
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(1000, TimeUnit.SECONDS)
-                .readTimeout(1000,TimeUnit.SECONDS).build();
-
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100,TimeUnit.SECONDS).build();
 
         //Using retrofit to connect to the Api
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseURL)
+                .baseUrl("http://192.168.0.13:5000/")
                 .client(client)
                 .build();
         placeholder = retrofit.create(Placeholder.class);
 
         Requests post = new Requests(numeric_input.getValue(), textView.getText().toString());
         Log.d(TAG, "This is what is the conents of the Requests object" + post.toString());
-
-
         //Creating a call object. What is sent to server
         Call<Requests> call = placeholder.createPost(post);
-        Log.d(TAG, "call" + call);
-
+        Log.d(TAG, "This is the call " + call);
 
         //Call<Requests> call = placeholder.createtest();
         Log.d(TAG,""+System.currentTimeMillis());
@@ -231,9 +227,11 @@ public class SummarizeActivity extends AppCompatActivity {
             public void onResponse(Call<Requests> call, Response<Requests> response) {
                 Log.d(TAG,""+System.currentTimeMillis());
                 if (!response.isSuccessful()) {
-                    Log.d(TAG, "Summarization has failed, Check your connection" + response);
+                    Log.d(TAG, "Summarization has failed, Check your connection " + response.code() +"\n" + call.toString());
                     return;
                 }
+
+
                 Log.d(TAG, "Response is successful");
                 //Body of the response;
                 Requests postResponse = response.body();
