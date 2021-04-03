@@ -9,6 +9,13 @@ public class Requests {
         this.summarised_text = scanned_text;
     }
 
+    @Override
+    public String toString() {
+        return "Requests{" +
+                "num_sentences=" + num_sentences +
+                ", summarised_text='" + summarised_text + '\'' +
+                '}';
+    }
 
     public int getNum_sentences() {
         return num_sentences;

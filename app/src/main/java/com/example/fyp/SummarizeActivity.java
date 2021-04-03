@@ -25,9 +25,9 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +50,7 @@ public class SummarizeActivity extends AppCompatActivity {
     private static final String KEY_SCAN_TEXT = "SCANTEXT";
     private static final String baseURL = "http://192.168.0.13:5000";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Placeholder placeholder;
 
 
     @Override
@@ -73,6 +74,7 @@ public class SummarizeActivity extends AppCompatActivity {
         numeric_input = findViewById(R.id.number_picker);
         numeric_input.setMinValue(0);
         numeric_input.setMaxValue(25);
+        numeric_input.setValue(3);
 
 
         //On click listeners for buttons
@@ -159,7 +161,7 @@ public class SummarizeActivity extends AppCompatActivity {
         }
     }
 
-//Open camera activity and pass text from previous scans
+    //Open camera activity and pass text from previous scans
     public void ScanText(View view) {
         //open the camera => create an Intent object
         String scan_text = textView.getText().toString();
@@ -171,56 +173,81 @@ public class SummarizeActivity extends AppCompatActivity {
         startActivity(cameraActivityIntent);
         finish();
     }
+
     //Clears summary textview
     private void clearSumText(View view) {
         if (sTextView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
-        } else { sTextView.setText(""); } }
+        } else {
+            sTextView.setText("");
+        }
+    }
+
     //Clears Scanned textview
     private void clearScanText(View view) {
         if (textView.getText().toString().isEmpty()) {
             Toast.makeText(this, "Your text has already been cleared", Toast.LENGTH_LONG).show();
-        } else { textView.setText(""); } }
-
+        } else {
+            textView.setText("");
+        }
+    }
 
 
     private void Summarize(View view) {
         Log.d(TAG, "Summarize method is running");
-        try {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseURL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            Log.d(TAG, "Summarize method is running after retrofit and being passed baseurl");
-            Placeholder placeholder = retrofit.create(Placeholder.class);
-            Requests post = new Requests(numeric_input.getValue(), textView.getText().toString());
-            Call<Requests> call = placeholder.createPost(post);
-            Log.d(TAG, "Call has been made:\t" + call);
-            call.enqueue(new Callback<Requests>() {
-                @Override
-                public void onResponse(Call<Requests> call, Response<Requests> response) {
-                    if (!response.isSuccessful()) {
-                        Log.d(TAG, "Response is unsuccessful");
-                    }
-                    Log.d(TAG, "Response is successful");
-                    Requests postResponse = response.body();
-                    String content = "";
-                    content += postResponse.getSummarised_text();
-                    sTextView.setText(content);
-                }
-                @Override
-                public void onFailure(Call<Requests> call, Throwable t) {
-                    Log.d(TAG, "Call has failed:\t" + t);
-                }
-            });
-        } catch (Exception e) {
-            Log.d(TAG, "Error:\t" + e);
+        //Checking if text is empty
+        if (textView.getText().toString().isEmpty()) {
+            Toast.makeText(this, "There seems to be no text to summarize", Toast.LENGTH_LONG).show();
+            return;
         }
 
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(1000, TimeUnit.SECONDS)
+                .readTimeout(1000,TimeUnit.SECONDS).build();
+
+
+        //Using retrofit to connect to the Api
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(baseURL)
+                .client(client)
+                .build();
+        placeholder = retrofit.create(Placeholder.class);
+
+        Requests post = new Requests(numeric_input.getValue(), textView.getText().toString());
+        Log.d(TAG, "This is what is the conents of the Requests object" + post.toString());
+
+
+        //Creating a call object. What is sent to server
+        Call<Requests> call = placeholder.createPost(post);
+        Log.d(TAG, "call" + call);
+
+
+        //Call<Requests> call = placeholder.createtest();
+        Log.d(TAG,""+System.currentTimeMillis());
+        //Post has been sent These are the results
+        call.enqueue(new Callback<Requests>() {
+            @Override
+            public void onResponse(Call<Requests> call, Response<Requests> response) {
+                Log.d(TAG,""+System.currentTimeMillis());
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, "Summarization has failed, Check your connection" + response);
+                    return;
+                }
+                Log.d(TAG, "Response is successful");
+                //Body of the response;
+                Requests postResponse = response.body();
+                String summaryContent = "";
+                summaryContent += postResponse.getSummarised_text();
+                sTextView.setText(summaryContent);
+            }
+
+            @Override
+            public void onFailure(Call<Requests> call, Throwable t) {
+                Log.d(TAG, "Failed to retrieve data\t" + t);
+            }
+        });
     }
-
-
-
 
 
     //Brings user to main activity
@@ -229,7 +256,7 @@ public class SummarizeActivity extends AppCompatActivity {
         finish();
     }
 
-//Saves text to Firebasefirestore and send user to the file view activity
+    //Saves text to Firebasefirestore and send user to the file view activity
     public void save_summary(View view) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (sTextView.getText().toString().length() < 5) {
@@ -248,14 +275,15 @@ public class SummarizeActivity extends AppCompatActivity {
                 Summary summary = new Summary(
                         filename,
                         data
-                        );
+                );
                 db.collection(userId).document().set(summary)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Intent intent = new Intent(getApplicationContext(), ViewFilesActivity.class);
                                 startActivity(intent);
-                                finish();                            }
+                                finish();
+                            }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override

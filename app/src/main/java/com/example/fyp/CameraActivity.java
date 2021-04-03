@@ -60,7 +60,7 @@ public class CameraActivity extends AppCompatActivity {
     private static String KEY_SUMMARY_TEXT = "SUMMARYTEXT";
     private static String KEY_SCAN_TEXT = "SCANTEXT";
     private Switch flashLight;
-    boolean flash;
+    private boolean flash;
 
 
 
@@ -68,10 +68,12 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate for Camera is running");
 
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        getSupportActionBar().hide();
-        textureView = (TextureView) findViewById(R.id.view_finder);
+        getSupportActionBar();
+        textureView =findViewById(R.id.view_finder);
         btnCapture = findViewById(R.id.btnCapture);
         flashLight = findViewById(R.id.flashLight);
         flash = false;
