@@ -34,7 +34,19 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*
+Summarize Activity can be accessed by the main and CameraActivity.  The summarize activity can access
+Main, Camera and view File Activity.
 
+This activity uses the Firebase ML kit for OCR. This activity receives a bitmap from the CamerActivity. This bitmap is
+then sent to FirebaseVisionText recogniser where text from it is the extracted.
+
+This Activity is also connected to the bert Summarizer.
+The activity creates an object Of type request contains the text and amount of sentences to be returned.
+When the return is successful it is displayed the the summarize activity edit text.
+
+This Activity uses retrofit to connect to the API
+ */
 public class SummarizeActivity extends AppCompatActivity {
     private TextView textView;
     private TextView sTextView;
@@ -83,7 +95,6 @@ public class SummarizeActivity extends AppCompatActivity {
                 back(view);
             }
         });
-
         clearSumTextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 clearSumText(view);
@@ -94,7 +105,6 @@ public class SummarizeActivity extends AppCompatActivity {
                 clearScanText(view);
             }
         });
-
         summarizeBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Summarize(view);
@@ -200,10 +210,9 @@ public class SummarizeActivity extends AppCompatActivity {
             Toast.makeText(this, "There seems to be no text to summarize", Toast.LENGTH_LONG).show();
             return;
         }
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(100, TimeUnit.SECONDS)
-                .readTimeout(100,TimeUnit.SECONDS).build();
+                .readTimeout(100, TimeUnit.SECONDS).build();
 
         //Using retrofit to connect to the Api
         Retrofit retrofit = new Retrofit.Builder()
@@ -220,19 +229,19 @@ public class SummarizeActivity extends AppCompatActivity {
         Log.d(TAG, "This is the call " + call);
 
         //Call<Requests> call = placeholder.createtest();
-        Log.d(TAG,""+System.currentTimeMillis());
+        Log.d(TAG, "" + System.currentTimeMillis());
         //Post has been sent These are the results
         call.enqueue(new Callback<Requests>() {
             @Override
             public void onResponse(Call<Requests> call, Response<Requests> response) {
-                Log.d(TAG,""+System.currentTimeMillis());
+                Log.d(TAG, "" + System.currentTimeMillis());
                 if (!response.isSuccessful()) {
-                    Log.d(TAG, "Summarization has failed, Check your connection " + response.code() +"\n" + call.toString());
+                    Log.d(TAG, "Summarization has failed, Check your connection " + response.code() + "\n" + call.toString());
                     return;
                 }
 
 
-                Log.d(TAG, "Response is successful");
+                Log.d(TAG, "Response is successful: " + response.body());
                 //Body of the response;
                 Requests postResponse = response.body();
                 String summaryContent = "";

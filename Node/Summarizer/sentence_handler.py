@@ -2,7 +2,7 @@ import nltk
 
 
 class SentenceHandler:
-
+# Seperate source text into individual sentences
     def __init__(self):
         self.sentence_tokenizer = nltk.tokenize.sent_tokenize
 

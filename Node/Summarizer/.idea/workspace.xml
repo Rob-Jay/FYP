@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="04313542-b361-4708-9d85-ad9314aa986d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/csv-plugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/SentenceTransformer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/bertModel.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/cluster_handler.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Summarizer/sentence_handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../app/src/main/java/com/example/fyp/SummarizeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../app/src/main/java/com/example/fyp/SummarizeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../app/src/main/res/layout/activity_view_summarization.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../app/src/main/res/layout/activity_view_summarization.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +30,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -110,6 +100,7 @@
       <workItem from="1616413425968" duration="5381000" />
       <workItem from="1616503828868" duration="1140000" />
       <workItem from="1616602551248" duration="1029000" />
+      <workItem from="1617662126112" duration="15000" />
     </task>
     <servers />
   </component>

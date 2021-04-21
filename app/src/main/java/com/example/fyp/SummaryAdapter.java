@@ -1,4 +1,5 @@
 package com.example.fyp;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class SummaryAdapter extends FirestoreRecyclerAdapter<Summary, SummaryAdapter.SummaryHolder > {
+
+//This class extends FirestoreRecyclerAdapter to allow for the storage of the infromation in thedatabase inside a recycler view
+public class SummaryAdapter extends FirestoreRecyclerAdapter<Summary, SummaryAdapter.SummaryHolder> {
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -30,20 +33,19 @@ public class SummaryAdapter extends FirestoreRecyclerAdapter<Summary, SummaryAda
         holder.textViewDescription.setText(model.getSummary());
         holder.textViewTitle.setText(model.getTitle());
     }
-
     @NonNull
     @Override
     public SummaryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_item,parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summary_item, parent, false);
         return new SummaryHolder(v);
     }
 
-    public void deleteSummary(int position){
+    public void deleteSummary(int position) {
         getSnapshots().getSnapshot(position).getReference().delete();
     }
 
 
-    class SummaryHolder extends RecyclerView.ViewHolder{
+    class SummaryHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle;
         TextView textViewDescription;
 

@@ -1,5 +1,7 @@
 package com.example.fyp;
 
+
+//Requests File is an object to send and receive data for Summarization. This is used in the SummarizeActivity
 public class Requests {
     private int num_sentences;
     private String summarised_text;

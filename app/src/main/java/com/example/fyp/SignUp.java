@@ -1,8 +1,5 @@
 package com.example.fyp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,17 +27,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+//The Signup Activity allows the user to create an account using Firebase Authentication
 public class SignUp extends AppCompatActivity {
-    EditText mFullName, mEmail,mPassword, mConfirmPassword;
-    Button mSignUpBtn;
-    TextView mLoginButton;
-    FirebaseAuth fAuth;
-    GoogleSignInClient mGoogleSignInClient;
-    int RC_SIGN_IN =1;
-    SignInButton signInButton;
 
-
-
+    private final int RC_SIGN_IN = 1;
+    //The SignUp Activity is accessed by the Login Activity and is used to create a user account
+    private FirebaseAuth fAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private SignInButton signInButton;
+    private EditText mFullName, mEmail, mPassword, mConfirmPassword;
+    private Button mSignUpBtn;
+    private TextView mLoginButton;
 
 
     @Override
@@ -45,6 +45,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        //Locating enteties in the XML files
         signInButton = findViewById(R.id.google_login);
         mFullName = findViewById(R.id.signup_name);
         mEmail = findViewById(R.id.signup_email);
@@ -52,31 +53,29 @@ public class SignUp extends AppCompatActivity {
         mConfirmPassword = findViewById(R.id.signup_confirm_password);
         mSignUpBtn = findViewById(R.id.signup_button);
         mLoginButton = findViewById(R.id.signup_login_text);
-
         fAuth = FirebaseAuth.getInstance();
 
-
+        //Creating a googleSignInOption to allow user to access with their gmail.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        if(fAuth.getCurrentUser()!= null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+        //If a user is already signed in they should be brought to the main activity
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
-
-        signInButton.setOnClickListener(new View.OnClickListener(){
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 signIn();
-
-
             }
         });
 
-
+//On Click button for SignIn. Checks users details and logs them in with FirebaseAuth
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,46 +83,44 @@ public class SignUp extends AppCompatActivity {
                 String password = mPassword.getText().toString().trim();
                 String confirmPassword = mConfirmPassword.getText().toString().trim();
                 String Name = mFullName.getText().toString().trim();
-                if(TextUtils.isEmpty(email)) {
+                if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required");
                     return;
                 }
-                if(TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(password)) {
                     mPassword.setError("Password is required");
                 }
-                if(password.length() < 6){
+                if (password.length() < 6) {
                     mPassword.setError("Password must be more than 6 characters long");
                     return;
                 }
-                if(TextUtils.isEmpty(Name)){
+                if (TextUtils.isEmpty(Name)) {
                     mPassword.setError("Please enter your Name");
                     return;
                 }
-                if(!password.equals(confirmPassword)){
+                if (!password.equals(confirmPassword)) {
                     mPassword.setError("Passwords do not match");
                     return;
                 }
-
-                fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
+                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Toast.makeText(SignUp.this, "User Created", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
-                        }else{
-                            Toast.makeText(SignUp.this,"Error" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(SignUp.this, "Error" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-
-
             }
         });
 
-        mLoginButton.setOnClickListener(new View.OnClickListener(){
+        //Brings user to Login Activity
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
 
@@ -132,10 +129,12 @@ public class SignUp extends AppCompatActivity {
         });
 
     }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,6 +153,7 @@ public class SignUp extends AppCompatActivity {
             }
         }
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         fAuth.signInWithCredential(credential)
@@ -164,7 +164,7 @@ public class SignUp extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Error", "signInWithCredential:success");
                             FirebaseUser user = fAuth.getCurrentUser();
-                            Intent intent = new Intent(SignUp.this,MainActivity.class);
+                            Intent intent = new Intent(SignUp.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
