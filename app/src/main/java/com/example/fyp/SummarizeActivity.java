@@ -217,7 +217,7 @@ public class SummarizeActivity extends AppCompatActivity {
         //Using retrofit to connect to the Api
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://192.168.0.13:5000/")
+                .baseUrl("https://summarizer-fyp.herokuapp.com/")
                 .client(client)
                 .build();
         placeholder = retrofit.create(Placeholder.class);

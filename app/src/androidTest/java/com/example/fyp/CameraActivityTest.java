@@ -8,6 +8,7 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -23,35 +24,71 @@ import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class OpenSummaryTest {
+public class CameraActivityTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    @Rule
+    public GrantPermissionRule mGrantPermissionRule =
+            GrantPermissionRule.grant(
+                    "android.permission.CAMERA",
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+
     @Test
-    public void openSummaryTest() {
+    public void cameraActivityTest() {
         ViewInteraction linearLayout = onView(
                 childAtPosition(
                         childAtPosition(
                                 withClassName(is("android.widget.LinearLayout")),
                                 0),
-                        2));
+                        0));
         linearLayout.perform(scrollTo(), click());
 
-        ViewInteraction appCompatImageView = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.Search_and_back),
+        ViewInteraction switch_ = onView(
+                allOf(withId(R.id.flashLight), withText("Flash Off"),
+                        childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.RelativeLayout")),
-                                        0)),
-                        0),
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        switch_.perform(click());
+
+        ViewInteraction appCompatImageView = onView(
+                allOf(withId(R.id.btnCapture),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
                         isDisplayed()));
         appCompatImageView.perform(click());
+
+        ViewInteraction appCompatImageView2 = onView(
+                allOf(withId(R.id.btnCapture),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatImageView2.perform(click());
+
+        ViewInteraction linearLayout2 = onView(
+                allOf(withId(R.id.save_summary_btn),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        3),
+                                2)));
+        linearLayout2.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(

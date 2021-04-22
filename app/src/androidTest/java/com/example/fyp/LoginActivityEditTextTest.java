@@ -8,6 +8,7 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -18,39 +19,39 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
 
 @LargeTest
-public class SignInTest {
+@RunWith(AndroidJUnit4.class)
+public class LoginActivityEditTextTest {
 
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    
     @Test
-    public void signInTest() {
-        ViewInteraction gh = onView(
-                allOf(withText("Sign In"),
+    public void loginActivityEditTextTest() {
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.login_email),
                         childAtPosition(
-                                allOf(withId(R.id.google_login),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                0)),
-                                0),
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
                         isDisplayed()));
-        gh.perform(click());
+        appCompatEditText.perform(pressImeActionButton());
 
-        ViewInteraction linearLayout = onView(
-                allOf(withId(R.id.button),
+        ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.login_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
                         isDisplayed()));
-        linearLayout.perform(click());
+        appCompatEditText2.perform(pressImeActionButton());
     }
 
     private static Matcher<View> childAtPosition(
