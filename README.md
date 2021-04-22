@@ -1,6 +1,6 @@
 # FYP
 
-This is a readme for the fyp tited Text summarization using Ber Supervised by Mike Hinchey
+This is a readme for the fyp tited Text summarization using Bert Supervised by Mike Hinchey
 
 This Project Contains the following
 
