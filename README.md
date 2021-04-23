@@ -33,19 +33,28 @@ The summarizer is currently running off a free heroku server. Due to the program
 
 ### Example account
 Email = emaitltest@mail.com
+
 Password = password
 
 ### Requiremnets
-pyton Requiremnets are as follows
+#### pyton Requiremnets are as follows
 
 pip install pandas
+
 pip install numpy
+
 pip install nltk
+
 pip install torch
+
 pip install matplotlib
+
 pip install seaborn
+
 pip install transformers
+
 pip install sklearn
+
 pip install sentence_transformers
 
 
